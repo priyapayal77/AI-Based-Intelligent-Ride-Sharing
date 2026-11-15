@@ -171,43 +171,8 @@ The matching engine considers features such as:
 - Route similarity.
 - Detour distance.
 
-The trained model is stored using Joblib and integrated into the ride-matching workflow.
 
----
 
-## 🎯 Project Objectives
 
-1. Develop an intelligent ride-sharing platform.
-2. Improve ride discovery through machine learning-based matching.
-3. Provide interactive route visualization.
-4. Estimate fares and travel time.
-5. Support ride booking and seat management.
-6. Encourage efficient utilization of available vehicles.
-
----
-
-## 🔮 Future Scope
-
-- Real-time GPS tracking.
-- Live notifications for passengers and drivers.
-- Online payment integration.
-- Advanced route optimization.
-- Improved ML model evaluation and performance.
-- Driver and passenger ratings.
-- Deployment as a scalable cloud-based application.
-
----
-
-## 👩‍💻 Author
-
-**Priya Payal**
-
-B.Tech – Information Technology
-
-GitHub: https://github.com/priyapayal77
-
----
-
-## 📄 License
 
 This project is developed for academic and educational purposes. A formal open-source license can be added separately if required.
