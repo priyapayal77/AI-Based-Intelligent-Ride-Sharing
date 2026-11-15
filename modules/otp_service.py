@@ -27,7 +27,6 @@ RESEND_COOLDOWN_SECONDS = 30
 # ==========================================
 
 def hash_otp(otp):
-
     return hashlib.sha256(
         otp.encode("utf-8")
     ).hexdigest()
@@ -41,6 +40,9 @@ def generate_demo_otp(phone_number):
 
     phone_number = phone_number.strip()
 
+    if not phone_number:
+        raise ValueError("Phone number is required.")
+
     user = get_user_by_phone(phone_number)
 
     if not user:
@@ -52,7 +54,6 @@ def generate_demo_otp(phone_number):
     connection = get_connection()
 
     try:
-
         existing = connection.execute(
             """
             SELECT created_at
@@ -63,7 +64,6 @@ def generate_demo_otp(phone_number):
         ).fetchone()
 
         if existing:
-
             created_at = datetime.fromisoformat(
                 existing["created_at"]
             )
@@ -78,9 +78,11 @@ def generate_demo_otp(phone_number):
                 ) + 1
 
                 raise ValueError(
-                    f"Please wait {remaining} seconds before requesting another OTP."
+                    f"Please wait {remaining} seconds "
+                    "before requesting another OTP."
                 )
 
+        # Generate a random 6-digit OTP
         otp = str(
             secrets.randbelow(10 ** OTP_LENGTH)
         ).zfill(OTP_LENGTH)
@@ -101,32 +103,28 @@ def generate_demo_otp(phone_number):
                 attempts,
                 created_at
             )
-            VALUES (?, ?, ?, 0, CURRENT_TIMESTAMP)
+            VALUES (?, ?, ?, 0, ?)
 
             ON CONFLICT(phone_number)
             DO UPDATE SET
                 otp_hash = excluded.otp_hash,
                 expires_at = excluded.expires_at,
                 attempts = 0,
-                created_at = CURRENT_TIMESTAMP
+                created_at = excluded.created_at
             """,
             (
                 phone_number,
                 otp_hash,
-                expires_at
+                expires_at,
+                datetime.now().isoformat()
             )
         )
 
         connection.commit()
 
-        # DEVELOPMENT ONLY: Never expose OTP like this in production.
-        print("\n========== DEMO OTP ==========")
-        print("Phone Number:", phone_number)
-        print("Your OTP:", otp)
-        print("Valid for:", OTP_EXPIRY_MINUTES, "minutes")
-        print("==============================\n")
-
-        return True
+        # Return OTP to app.py for demo display.
+        # Never display OTP this way in production.
+        return otp
 
     finally:
         connection.close()
@@ -141,13 +139,17 @@ def verify_demo_otp(phone_number, entered_otp):
     phone_number = phone_number.strip()
     entered_otp = entered_otp.strip()
 
-    if not entered_otp.isdigit() or len(entered_otp) != OTP_LENGTH:
-        raise ValueError("Enter a valid 6-digit OTP.")
+    if (
+        not entered_otp.isdigit()
+        or len(entered_otp) != OTP_LENGTH
+    ):
+        raise ValueError(
+            "Enter a valid 6-digit OTP."
+        )
 
     connection = get_connection()
 
     try:
-
         record = connection.execute(
             """
             SELECT *
@@ -158,17 +160,25 @@ def verify_demo_otp(phone_number, entered_otp):
         ).fetchone()
 
         if not record:
-            raise ValueError("OTP not found. Request a new OTP.")
+            raise ValueError(
+                "OTP not found. Request a new OTP."
+            )
 
         if record["attempts"] >= MAX_ATTEMPTS:
+
             connection.execute(
-                "DELETE FROM otp_verifications WHERE phone_number = ?",
+                """
+                DELETE FROM otp_verifications
+                WHERE phone_number = ?
+                """,
                 (phone_number,)
             )
+
             connection.commit()
 
             raise ValueError(
-                "Maximum attempts reached. Request a new OTP."
+                "Maximum attempts reached. "
+                "Request a new OTP."
             )
 
         expiry_time = datetime.fromisoformat(
@@ -178,7 +188,10 @@ def verify_demo_otp(phone_number, entered_otp):
         if datetime.now() > expiry_time:
 
             connection.execute(
-                "DELETE FROM otp_verifications WHERE phone_number = ?",
+                """
+                DELETE FROM otp_verifications
+                WHERE phone_number = ?
+                """,
                 (phone_number,)
             )
 
@@ -211,7 +224,10 @@ def verify_demo_otp(phone_number, entered_otp):
             )
 
         connection.execute(
-            "DELETE FROM otp_verifications WHERE phone_number = ?",
+            """
+            DELETE FROM otp_verifications
+            WHERE phone_number = ?
+            """,
             (phone_number,)
         )
 
@@ -223,6 +239,8 @@ def verify_demo_otp(phone_number, entered_otp):
     verified = mark_phone_verified(phone_number)
 
     if not verified:
-        raise ValueError("Could not verify this mobile number.")
+        raise ValueError(
+            "Could not verify this mobile number."
+        )
 
     return True

@@ -73,7 +73,8 @@ defaults = {
     "registration_message": None,
     "registration_error": None,
     "dashboard_rides": [],
-    "auth_mode": "Register"
+    "auth_mode": "Register",
+    "demo_otp_display": None
 }
 
 for key, value in defaults.items():
@@ -767,7 +768,9 @@ if st.session_state.logged_in_user is None:
                     except Exception as error:
                         st.error(f"Login failed: {error}")
 
+    # =====================================================
     # OTP VERIFICATION
+    # =====================================================
 
     if st.session_state.pending_verification_phone:
 
@@ -785,14 +788,12 @@ if st.session_state.logged_in_user is None:
         ):
 
             try:
-
-                generate_demo_otp(
+                otp = generate_demo_otp(
                     st.session_state.pending_verification_phone
                 )
 
-                st.success(
-                    "Demo OTP generated! Check your VS Code terminal."
-                )
+                st.session_state.demo_otp_display = otp
+                st.success("Demo OTP generated successfully!")
 
             except ValueError as error:
                 st.warning(str(error))
@@ -800,12 +801,18 @@ if st.session_state.logged_in_user is None:
             except Exception as error:
                 st.error(f"OTP generation failed: {error}")
 
+        if st.session_state.demo_otp_display:
+            st.info(
+                f"🔐 Your Demo OTP is: {st.session_state.demo_otp_display}"
+            )
+            st.caption("Demo OTP is displayed for testing only.")
+
         with st.form("demo_otp_verification_form"):
 
             entered_otp = st.text_input(
                 "Enter 6-Digit OTP",
                 max_chars=6,
-                placeholder="Enter OTP from terminal"
+                placeholder="Enter the 6-digit OTP shown above"
             )
 
             verify_button = st.form_submit_button(
@@ -816,22 +823,19 @@ if st.session_state.logged_in_user is None:
         if verify_button:
 
             try:
-
                 verified = verify_demo_otp(
                     st.session_state.pending_verification_phone,
                     entered_otp
                 )
 
                 if verified:
-
                     st.session_state.registration_verified = True
                     st.session_state.pending_verification_phone = None
+                    st.session_state.demo_otp_display = None
 
-                    st.success(
-                        "Mobile number verified successfully!"
-                    )
-
+                    st.success("Mobile number verified successfully!")
                     st.balloons()
+                    st.rerun()
 
             except ValueError as error:
                 st.error(str(error))
