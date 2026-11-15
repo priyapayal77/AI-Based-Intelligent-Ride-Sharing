@@ -1,56 +1,60 @@
 # 🚘 RideMate – AI-Based Intelligent Ride-Sharing Platform
 
-**Smart Rides | AI Matching | Safe Travel**
+### Your Journey, Reimagined.
 
-RideMate is an AI-powered ride-sharing platform designed to connect passengers and drivers travelling along similar routes. It combines machine learning-based ride matching, real-time route planning, fare estimation, and ride booking to make urban transportation more convenient and efficient.
+**RideMate** is an AI-powered intelligent ride-sharing platform designed to connect passengers and drivers travelling along similar routes. The platform uses machine learning-based ride matching, interactive maps, route planning, fare estimation, and ride booking to provide a smarter and more convenient transportation experience.
 
 ---
 
-## 📌 Project Overview
+## 🌟 Project Overview
 
-RideMate aims to improve the ride-sharing experience by helping passengers discover suitable rides based on pickup location, drop location, departure time, and route similarity.
+Traditional transportation services often involve individual rides, higher travel costs, and inefficient vehicle utilization.
 
-The platform provides separate dashboards for passengers and drivers, allowing drivers to register available rides and passengers to search, compare, and book suitable rides.
+RideMate aims to address these challenges by enabling passengers to find and share rides with drivers travelling in similar directions.
+
+The platform provides separate dashboards for passengers and drivers, allowing users to register, search for rides, manage bookings, and view route information.
 
 ## ✨ Key Features
 
-### 👤 User Authentication
+### 👤 1. User Authentication
 - Passenger and Driver registration.
-- Login using registered mobile number and password.
+- Secure login using mobile number and password.
 - Password hashing.
 - Demo OTP-based mobile number verification.
 
-### 🚗 Driver Dashboard
-- Register a ride with pickup and drop locations.
+### 🚗 2. Driver Dashboard
+- Register new rides.
+- Enter pickup and drop locations.
 - Select vehicle type: Bike, Auto, or Cab.
 - Specify available seats and departure time.
-- View and manage registered rides.
-- Update ride status.
+- View registered rides.
+- Manage ride status.
 
-### 📍 Passenger Dashboard
+### 📍 3. Passenger Dashboard
 - Search pickup and drop locations.
-- Select locations from geocoding suggestions.
-- View road routes on an interactive map.
-- Calculate estimated distance and travel time.
-- Compare estimated fares for different vehicle types.
+- Location suggestions through geocoding.
+- Interactive route visualization.
+- Road distance and estimated travel time.
+- Fare calculation and vehicle comparison.
 
-### 🤖 AI-Based Ride Matching
+### 🤖 4. AI-Based Ride Matching
 - Identify rides travelling along similar routes.
 - Compare pickup and drop distances.
 - Consider departure-time differences.
+- Evaluate route similarity.
 - Generate ride match scores using a machine learning model.
 
-### 🎫 Ride Booking
+### 🎫 5. Ride Booking Management
 - Book available shared rides.
 - Select the number of seats.
 - View booking history.
 - Cancel bookings.
-- Update seat availability after booking or cancellation.
+- Update available seats after booking and cancellation.
 
-### 🗺️ Route Visualization
-- OpenStreetMap-based mapping.
-- Interactive Folium maps.
-- OSRM-based route information.
+### 🗺️ 6. Interactive Route Planning
+- OpenStreetMap integration.
+- Folium-based interactive maps.
+- OSRM-based road route calculation.
 - Pickup and drop location markers.
 
 ---
@@ -63,16 +67,34 @@ The platform provides separate dashboards for passengers and drivers, allowing d
 | Frontend | Streamlit |
 | Machine Learning | Scikit-learn |
 | Data Processing | Pandas, NumPy |
-| Maps | OpenStreetMap, Folium, Leaflet |
+| Mapping | OpenStreetMap, Folium, Leaflet |
 | Geocoding | Geopy, Nominatim |
-| Route Calculation | OSRM |
+| Route Calculation | OSRM API |
 | Database | SQLite |
-| Model Storage | Joblib |
+| Model Serialization | Joblib |
 | Development Tools | VS Code, Git, GitHub |
 
 ---
 
-## 🏗️ Project Structure
+## 🧠 Machine Learning Approach
+
+RideMate incorporates a machine learning-based ride-matching system to identify potentially suitable rides.
+
+The matching process considers the following features:
+
+- `time_difference_min`
+- `pickup_distance_km`
+- `drop_distance_km`
+- `route_similarity`
+- `detour_distance_km`
+
+A trained machine learning model is integrated into the matching workflow to generate ride match scores.
+
+The model and its feature configuration are stored using Joblib.
+
+---
+
+## 📂 Project Structure
 
 ```text
 AI-Ride-Sharing/
@@ -107,72 +129,93 @@ AI-Ride-Sharing/
 └── README.md
 ```
 
-*Note: The structure above highlights the main project components. Your local repository may contain additional files and tests.*
+*Note: This is a simplified view of the main project structure. Additional testing and configuration files may also be present.*
 
 ---
 
 ## ⚙️ Installation and Setup
 
-### 1. Clone the repository
+Follow these steps to run RideMate locally.
+
+### Step 1: Clone the Repository
 
 ```bash
 git clone https://github.com/priyapayal77/AI-Based-Intelligent-Ride-Sharing.git
 ```
 
-### 2. Open the project folder
+### Step 2: Navigate to the Project Directory
 
 ```bash
 cd AI-Based-Intelligent-Ride-Sharing
 ```
 
-### 3. Create a virtual environment
+### Step 3: Create a Virtual Environment
 
 ```bash
 python -m venv venv
 ```
 
-### 4. Activate the virtual environment
+### Step 4: Activate the Virtual Environment
 
-**Windows PowerShell:**
+For Windows PowerShell:
 
 ```powershell
 .\venv\Scripts\Activate.ps1
 ```
 
-### 5. Install dependencies
+### Step 5: Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 6. Run the application
+### Step 6: Run the Application
 
 ```bash
 streamlit run app.py
 ```
 
-The application will open in your browser, usually at:
+The application will normally be available at:
 
-```text
-http://localhost:8501
-```
+**http://localhost:8501**
 
 ---
 
-## 🧠 Machine Learning Approach
+## 🎯 Project Objectives
 
-RideMate uses a machine learning-based matching approach to identify potentially suitable shared rides.
+1. Develop an intelligent ride-sharing platform.
+2. Implement machine learning-based ride matching.
+3. Reduce unnecessary individual vehicle journeys through ride sharing.
+4. Provide interactive route planning and visualization.
+5. Calculate estimated fares and travel times.
+6. Implement ride booking and seat management.
 
-The matching engine considers features such as:
+---
 
-- Time difference between rides.
-- Pickup distance.
-- Drop distance.
-- Route similarity.
-- Detour distance.
+## 🔮 Future Scope
 
+- Real-time GPS tracking.
+- Live driver and passenger notifications.
+- Online payment integration.
+- Advanced route optimization.
+- Improved machine learning model evaluation.
+- Driver and passenger rating systems.
+- Cloud deployment and scalability.
 
+---
 
+## 👩‍💻 Author
 
+**Priya Payal**
 
-This project is developed for academic and educational purposes. A formal open-source license can be added separately if required.
+B.Tech – Information Technology
+
+GitHub: [priyapayal77](https://github.com/priyapayal77)
+
+Project Repository: [AI-Based Intelligent Ride-Sharing Platform](https://github.com/priyapayal77/AI-Based-Intelligent-Ride-Sharing)
+
+---
+
+## 📄 License
+
+This project is developed for academic and educational purposes. A suitable open-source license can be added separately if the project is intended for public reuse.
