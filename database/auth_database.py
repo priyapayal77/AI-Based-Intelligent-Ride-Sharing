@@ -1,8 +1,8 @@
-
 import hashlib
 import hmac
 import re
 import secrets
+import sqlite3
 
 from database.database import get_connection
 
@@ -85,6 +85,29 @@ def create_user(full_name, phone_number, password, role):
 
     try:
 
+        # Check whether this exact phone number exists
+        existing_user = connection.execute(
+            """
+            SELECT user_id, is_phone_verified
+            FROM users
+            WHERE phone_number = ?
+            """,
+            (phone_number,)
+        ).fetchone()
+
+        if existing_user:
+
+            if existing_user["is_phone_verified"]:
+                raise ValueError(
+                    "This mobile number is already registered. "
+                    "Please login instead."
+                )
+
+            raise ValueError(
+                "An unverified account already exists for this number. "
+                "Please complete mobile verification instead of registering again."
+            )
+
         cursor = connection.execute(
             """
             INSERT INTO users (
@@ -107,15 +130,23 @@ def create_user(full_name, phone_number, password, role):
 
         return cursor.lastrowid
 
-    except Exception as error:
+    except sqlite3.IntegrityError as error:
 
         connection.rollback()
 
-        if "UNIQUE constraint failed" in str(error):
+        error_message = str(error)
+
+        if "users.phone_number" in error_message:
             raise ValueError(
                 "This mobile number is already registered."
             )
 
+        raise ValueError(
+            f"Account could not be created: {error_message}"
+        )
+
+    except Exception:
+        connection.rollback()
         raise
 
     finally:
@@ -127,6 +158,8 @@ def create_user(full_name, phone_number, password, role):
 # ==========================================
 
 def get_user_by_phone(phone_number):
+
+    phone_number = phone_number.strip()
 
     connection = get_connection()
 
@@ -144,7 +177,7 @@ def get_user_by_phone(phone_number):
             FROM users
             WHERE phone_number = ?
             """,
-            (phone_number.strip(),)
+            (phone_number,)
         ).fetchone()
 
         return dict(user) if user else None
@@ -209,7 +242,6 @@ def authenticate_user(phone_number, password, role):
         ):
             return None
 
-        # OTP verification is required before login.
         if not user["is_phone_verified"]:
             return None
 
