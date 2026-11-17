@@ -92,3 +92,15 @@ def initialize_database():
 
 if __name__ == "__main__":
     initialize_database()
+def check_rides_schema():
+    connection = get_connection()
+    try:
+        columns = connection.execute(
+            "PRAGMA table_info(rides)"
+        ).fetchall()
+
+        print("RIDES TABLE COLUMNS:")
+        for column in columns:
+            print(column["name"])
+    finally:
+        connection.close()

@@ -673,13 +673,26 @@ if st.session_state.logged_in_user is None:
                             f"Account created successfully! User ID: {user_id}"
                         )
 
-                    except ValueError as error:
+                    
+                except ValueError as error:
 
-                        st.session_state.registration_error = str(error)
+    error_message = str(error)
 
-                    except Exception as error:
+    if "unverified account already exists" in error_message.lower():
 
-                        st.session_state.registration_error = (
+        st.session_state.pending_verification_phone = phone_number.strip()
+        st.session_state.registration_error = None
+        st.session_state.registration_message = (
+            "This mobile number is already registered but not verified. "
+            "Please complete mobile verification below."
+        )
+
+    else:
+        st.session_state.registration_error = error_message
+
+
+        except Exception as error:
+        st.session_state.registration_error = (
                             f"Registration failed: {error}"
                         )
 
