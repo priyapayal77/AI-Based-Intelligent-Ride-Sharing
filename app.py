@@ -677,7 +677,7 @@ if st.session_state.logged_in_user is None:
 
                          error_message = str(error)
 
-                         if "unverified account already exists" in error_message.lower():
+        if "unverified account already exists" in error_message.lower():
 
         st.session_state.pending_verification_phone = (
             phone_number.strip()
