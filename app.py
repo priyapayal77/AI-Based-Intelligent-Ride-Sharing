@@ -654,8 +654,8 @@ if st.session_state.logged_in_user is None:
 
                 else:
 
+                   
                     try:
-
                         user_id = create_user(
                             full_name=full_name.strip(),
                             phone_number=phone_number.strip(),
@@ -673,28 +673,24 @@ if st.session_state.logged_in_user is None:
                             f"Account created successfully! User ID: {user_id}"
                         )
 
-                    
-                except ValueError as error:
+                    except ValueError as error:
+                        error_message = str(error)
 
-    error_message = str(error)
+                        if "unverified account already exists" in error_message.lower():
+                            st.session_state.pending_verification_phone = phone_number.strip()
+                            st.session_state.registration_error = None
+                            st.session_state.registration_message = (
+                                "This mobile number is already registered but not verified. "
+                                "Please complete mobile verification below."
+                            )
+                        else:
+                            st.session_state.registration_error = error_message
 
-    if "unverified account already exists" in error_message.lower():
-
-        st.session_state.pending_verification_phone = phone_number.strip()
-        st.session_state.registration_error = None
-        st.session_state.registration_message = (
-            "This mobile number is already registered but not verified. "
-            "Please complete mobile verification below."
-        )
-
-    else:
-        st.session_state.registration_error = error_message
-
-
-        except Exception as error:
-        st.session_state.registration_error = (
+                    except Exception as error:
+                        st.session_state.registration_error = (
                             f"Registration failed: {error}"
                         )
+
 
             # Show current result only
 
