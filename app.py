@@ -675,9 +675,9 @@ if st.session_state.logged_in_user is None:
 
                     except ValueError as error:
 
-    error_message = str(error)
+                         error_message = str(error)
 
-    if "unverified account already exists" in error_message.lower():
+                         if "unverified account already exists" in error_message.lower():
 
         st.session_state.pending_verification_phone = (
             phone_number.strip()
@@ -690,14 +690,14 @@ if st.session_state.logged_in_user is None:
             "Generate OTP below to complete verification."
         )
 
-    else:
+                    else:
         st.session_state.registration_error = error_message
 
                 
 
                     except Exception as error:
 
-                        st.session_state.registration_error = (
+        st.session_state.registration_error = (
                             f"Registration failed: {error}"
                         )
 
